@@ -1,18 +1,66 @@
 # ESP-Now-Serial-Bridge
 
-ESP32 based serial bridge for transmitting serial data between two boards
+### What's this?
 
-The primary purpose of this sketch was to enable a MAVLink serial connection, which I successfully tested at 57600 bps.  In theory, much faster buad rates should work fine, but I have not tested faster than 115200.
- 
-Range is easily better than regular WiFi, however an external antenna may be required for truly long range messaging, to combat obstacles/walls, and/or to achieve success in an area saturated with 2.4GHz traffic.
+This is a simple UART bridge which utilizes two ESP8266-based (in my case, ESP-01) boards. The wireless communication is Espressif's
+own ESP-Now propriatery solution which boasts way shorter latencies and larger signal ranges, which is exactly what's desired
+for this type of application. Bonus point is that this wireless protocol is entirely peer to peer so it does not depend on local Wi-Fi
+or 2.4 GHz load.
 
-To find the MAC address of each board, uncomment the `#define DEBUG` line, and monitor serial output on boot.  Set the OPPOSITE board's IP address as the value for RECVR_MAC in the macros at the top of the sketch.
 
-When uploading the sketch, be sure to define `BOARD1` or `BOARD2` as appropriate before compiling.
+### Applications?
 
--- Yuri - Sep 2021
+I am currently using this as a Octoprint serial bridge between my server and the home server I have set up in my room.
 
-Based this example - https://randomnerdtutorials.com/esp-now-two-way-communication-esp32/
+As someone who does not like very loud 3D printer noises this is a desired feature. 
+
+It's potentially any other DIY project which uses serial for communication but would like to have extremely small communication latencies.
+
+
+### Security?
+
+NONE, **PLEASE DO NOT USE THIS FOR ANY SENSITIVE INFO**. THE WIRELESS DATA IS NOT ENCRYPTED AT ALL.
+
+This was done on purpose to increase the throughput of this solution as speed and latency is what's most important here.
+
+
+### How do I use this?
+
+ - Get two ESP8266 based boards, in my case two ESP-01s and it's USB serial programmer.
+
+ - Install Arduino IDE 1.6 (haven't tried on 2.0 but please report if successful)
+
+ - From within Arduino IDE install the [ESP8266 core](https://github.com/esp8266/Arduino). This is typically done by pasting the json url into the Board manager.
+
+ - Open this project in Arduino IDE and change values as desired.
+
+   - The thing to look out for is whether or not you want packet resending. For 3D printing applications I honestly found it works better if you disable resending
+   as Octoprint will do that itself.
+
+ - Hit compile and upload
+
+   - During the upload you can see what MAC address your ESP8266-based board has. This is important, put that into the code and plug in the other board.
+
+ - Set the BOARD1 variable and compile and upload again. Grab the MAC address of the other board.
+
+ - Unplug the 2nd board and plug in the first one, remembering to unset BOARD1, hit compile and upload once more and you should be done.
+
+ - Wire your ESP8266 board accordingly (use Google) and try it out. It should be a pretty responsive UART solution.
+
+
+### Derivative work?
+
+Based off of [Yuri's own ESP serial bridge](https://github.com/yuri-rage/ESP-Now-Serial-Bridge), 
+this is the same thing but HEAVILY modified to suit some needs.
+
+Changes from the original:
+
+ - Added packet resending (configurable)
+
+ - Removed ESP reset on connection failure as it would result in junk being outputted in the serial, which you definitely DO NOT WANT.
+
+ - Using ESP8266 (ESP-01) as the target device instead of the ESP32s because the ESP-01 board is MUUUUUUUUUUCH cheaper in my country.
+
 
 ### License
 
