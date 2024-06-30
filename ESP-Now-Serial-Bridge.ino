@@ -88,6 +88,8 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   Serial.print("Bytes received: ");
   Serial.println(len);
   #endif
+
+  ESP.wdtFeed();
   
   memcpy(&buf_recv, incomingData, sizeof(buf_recv));
   Serial.write(buf_recv, len);
