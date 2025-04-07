@@ -1,3 +1,9 @@
+## UPDATE
+
+Upon further research and experimentation I found that ESP3D (2.x) works better as a serial bridge than this ever did.
+
+Please look at https://github.com/R0peE/esp-01-octoprint instead.
+
 # ESP-Now-Serial-Bridge
 
 ### What's this?
